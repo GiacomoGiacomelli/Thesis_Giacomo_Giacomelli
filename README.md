@@ -1,2 +1,4 @@
 # Thesis_Giacomo_Giacomelli
-Thesis related scripts
+
+This repository contains the following items:
+- Fiji macros: 
