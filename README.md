@@ -47,7 +47,8 @@ Fiji_Macro_4:_Profiling (Works on any rendering)
 
 Conventional_Like_Analysis_Histograms:
 - Input: Red*.txt (Allows for contemporaray analysis of multiple cells from multiple fields of view; see "file input" section within "Conventional_Like_Analysis_Histograms")
-- Output 1: XXX_profiles_ordered.txt (Channel 1 fluorescence profiles ordereed by cell length)
+- Output 1A: XXX_profiles_ordered_CellSpecificMaxYy.txt (Channel 1 fluorescence profiles ordereed by cell length)
+- Output 1B: XXX_profiles_ordered_GeneralMaxY.txt (Channel 1 fluorescence profiles ordereed by cell length)
 - Output 2: XXX_profiles_ordered_matrix.txt (Channel 1 matrix used to represent the fluorescence profiles as demographs via hist2d())
 - Output 3: XXX_demograph.png
 
