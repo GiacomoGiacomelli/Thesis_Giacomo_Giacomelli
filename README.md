@@ -18,7 +18,8 @@ Fiji macro 2 (Watershed):
 Fiji macro 3:
 - Input: Binary Mask (.tif)
 - Manual Input required: Add ROIs of interest to ROI manager (Wand tool) (Save the list of ROIs as .zip before proceeding)
-- Output: Cell*.txt (Requires the existence of a folder named "Cells" within the working directory, it outputs a single file for each ROI listed within the ROI manager)
+- Requirements: a folder named "Cells" within the working directory
+- Output: Cell*.txt (it outputs in "Cells" a single file for each ROI listed within the ROI manager)
 
 Script_R1_ROI_mod (ROI modification script):
 - Input: ROIs obtained via Fiji macro 3 -> need to be named Cell*.txt
@@ -36,6 +37,13 @@ Script_R2_Filtering:
 
 - Channel_#_cells_drifted_filtered_IMG.txt can be imported in ZenBlack and shown as Gaussian rendering, ... 
 - Generally, SMLM data tables can be imported in the Fiji plugin ThunderSTORM (M. Ovesný et al. 2014) and rendered as Normalized Gaussian, Histograms and other rendering variants. The resulting rendering can be used for conventional-like analysis (ThunderSTORM Import Header: id, frame,	x [nm],	y [nm],	sigma [nm],	intensity [photon],	offset [photon],	bkgstd [photon],	chi2,	uncertainty_xy [nm])
+
+Fiji_Macro_4:_Profiling
+- Input: DualChannel_8/16/32-bit_.tif (Channel1-> histograms, Channel2-> bright field)
+- Requirements 1: A folder named "Profiles" within the same folder of the Input image
+- Requirements 2: ROIs (segmented lines of width 1 um) correspondent to each profile have been added to the ROI manager
+- Output 1: Red*.txt (x position, average fluorescence intensity in Channel 1 across the ROI width at x position)
+- Output 2: Grey*.txt (x position, average fluorescence intensity in Channel 2 across the ROI width at x position)
 
 Conventional_Like_Analysis_Histograms:
 - Input 1:
