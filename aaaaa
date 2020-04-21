@@ -1,0 +1,29 @@
+
+file1$V3<-as.factor(file1$V3)
+file1<-file1[file1$V3!=570.0027,]
+b<-seq(0,1,by=0.01)
+TOT<-data.frame()
+t<-1
+for(i in unique(file1$V3)){
+  M<-max(file1[file1$V3==i,]$x)
+  a<-seq(0,M,by=M/100)
+  df<-as.data.frame(b)
+  df[2]<-0
+  df[3]<-1
+  for(k in c(2:101)) {
+    df[df$b==b[k],][2]<-sum(file1[file1$V3==i & file1$x<=a[k] & file1$x>a[k-1],]$y)
+    df[df$b==b[k],][3]<-t
+  }
+  t<-t+1
+TOT<-rbind(TOT,df)
+}
+TOT1<-TOT
+TOT1$V3<-as.factor(TOT1$V3)
+df<-as.data.frame(b)
+df[2]<-0
+df[3]<-0
+for(i in unique(TOT1$b)){
+  df[df$b==i,][2]<-mean(TOT1[TOT1$b==i,]$V2)
+  df[df$b==i,][3]<-sum(TOT1[TOT1$b==i,]$V2)
+}
+DF1<-df
