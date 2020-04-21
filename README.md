@@ -20,6 +20,8 @@ Fiji macro 3:
   
 Script_R1_ROI_mod (ROI modification script):
 - Input: ROIs obtained via Fiji macro 3 -> need to be named Cell*.txt
-- Output: ROIs ready to be used for "Script_R2_PALM filtering" script -> R.Cell*.txt
+- Output: ROIs ready to be used for "Script_R2_Filtering" script -> R.Cell*.txt
 
-Script_R2_filtering
+Script_R2_Filtering:
+- Input 1: Output from Script_R1_ROI_mod
+- Input 2: 
