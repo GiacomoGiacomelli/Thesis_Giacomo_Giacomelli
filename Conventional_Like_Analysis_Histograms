@@ -1,19 +1,23 @@
+############################################################################################################################################################################
+#Activate necessary packages
+############################################################################################################################################################################
+
 library("gplots")
 library("RColorBrewer")
 library("ggplot2")
 
-#setwd("F:/DipC_antibiotics/20190529ONmms/Profiles1")
-setwd("G:/GGiacomelli_AGBRAMKAMP/DIPS/testfoldernicola/THUNDERSTORMNEWDATA/PALM_results/20190117/wtbg/Profiles1")
-folder<-c("../Profiles1","../Profiles2","../Profiles3","../Profiles4","../Profiles5","../Profiles1A","../Profiles3A","../Profiles4A","../Profiles5A")  ###insert profiles folders
-#set working directory to first profiles folder 
+############################################################################################################################################################################
+#File input and filtering
+############################################################################################################################################################################
 
-setwd("G:/GGiacomelli_AGBRAMKAMP/DIPS/testfoldernicola/THUNDERSTORMNEWDATA/PALM_results/20190117/ddivsbg/Profiles1")
-folder<-c("../Profiles1","../Profiles2","../Profiles3","../Profiles4","../Profiles5","../Profiles7","../Profiles8","../Profiles9","../Profiles10")  ###insert profiles folders
+folder<-c("../Profiles1","../Profiles2","../Profiles3", ...)  ###list of profiles folders (one for field of view)
+setwd("C:/.../Profiles1")                                     ###set working directory to first profiles folder
+ 
+############################################################################################################################################################################
 
-#################################################
 chan<-"Red*"
-maxim<-0 #only for fist folder
-mayim<-0 #only for fist folder
+maxim<-0
+mayim<-0
 
 for (f in folder){
   setwd(f)
@@ -23,12 +27,12 @@ for (f in folder){
     if (max(filer$x>maxim)){
       maxim<-max(filer$x)
     }
-    if (max(filer$y>mayim)){                 #activate if normalize for maximum fluorescence overall
-      mayim<-max(filer$y)                    #
-    }                                        #
+    #if (max(filer$y>mayim)){                 #activate if normalize for maximum overall fluorescence 
+    #  mayim<-max(filer$y)                    #
+    #}                                        #
     }}
 
-a<-seq(0,maxim, by=0.02) #in PALM histograms: 0.02 # in epi 0.1
+a<-seq(0,maxim, by=0.02)                      #define binwidth (0.02 um)
 REDTOT<-data.frame()
 
 counter<-1
@@ -40,9 +44,7 @@ for(k in 1:length(RED)){
   file[3]<-length(file$x)+(0.0001*k) #risk that two cells of the same length from different folders come from a file with same name...think of solution
   file[4]<-counter
   counter<-counter+1
-  #if (file[1,3]!=570.0027) {   #only for WT
-  REDTOT<-rbind(REDTOT,file)   #always ON
-  #}                            #only for WT
+  REDTOT<-rbind(REDTOT,file)
 }
 REDTOT1<-REDTOT[order(REDTOT$V3),]
 }
@@ -51,7 +53,7 @@ df2<-data.frame()
 for(k in 1:length(unique(REDTOT1$V4))){
   print(k)
   file<-REDTOT1[REDTOT1$V4==unique(REDTOT1$V4)[k],]
-  mayim<-max(file$y)                                #if active it normalizes on max cell intensity
+  mayim<-max(file$y)                                      ###if active it normalizes on max cell intensity
   print(mayim)
   for (i in 1:(length(a)-1)){
     if (a[i]<max(file$x)){
@@ -67,40 +69,14 @@ for(k in 1:length(unique(REDTOT1$V4))){
 
 
 
-#write.table(REDTOT1, file="../dipcddivs_thesis.txt",sep=",",row.names = FALSE, quote=FALSE)
-#write.table(df2, file="../dipcddivs_thesis_prof.txt",sep=",",row.names = FALSE, quote=FALSE)
+write.table(REDTOT1, file="../wt_cellBYcell_thesis.txt",sep=",",row.names = FALSE, quote=FALSE)   ###save file containing the fluorescence profiles ordereed by cell length
+write.table(df2, file="../wt_cellBYcell_thesis_prof.txt",sep=",",row.names = FALSE, quote=FALSE)  ###save matrix used to represent the fluorescence profiles as demographs via hist2d()
 
-write.table(REDTOT1, file="../wt_cellBYcell_thesis.txt",sep=",",row.names = FALSE, quote=FALSE)
-write.table(df2, file="../wt_cellBYcell_thesis_prof.txt",sep=",",row.names = FALSE, quote=FALSE)
-write.table(REDTOT1, file="../ddivs_cellBYcell_thesis.txt",sep=",",row.names = FALSE, quote=FALSE)
-write.table(df2, file="../ddivs_cellBYcell_thesis_prof.txt",sep=",",row.names = FALSE, quote=FALSE)
+a<-seq(0,max(df2[1]), by=0.02)
 
-
-
-REDTOT1<-read.table(file="../wt_cellBYcell_thesis.txt",sep=",",header=TRUE)
-df2<-read.table(file="../wt_cellBYcell_thesis_prof.txt",sep=",",header=TRUE)
-
-REDTOT2<-read.table(file="../ddivs_cellBYcell_thesis.txt",sep=",",header=TRUE)
-df3<-read.table(file="../ddivs_cellBYcell_thesis_prof.txt",sep=",",header=TRUE)
-
-unique(REDTOT1$V3)
-
-
-
-a<-seq(0,7.24, by=0.02)
-
-a1<-seq(0,5.18, by=0.02)
-
-rf1<-colorRampPalette(c("black","blue","red","red"))
-rf1<-colorRampPalette(c("black","blue","red","red","red"))
+rf1<-colorRampPalette(c("black","blue","red","red","red")) ####Define color scale
 r <- rf1(256)
 
-old.par <- par(mar = c(0, 0, 0, 0))
-par(old.par)
-png(file="../WT_THESIS.png",height=3000,width=2500,res=600)
+png(file="../WT_THESIS.png",height=3000,width=2500,res=600)   ####Demograph
 h2<-hist2d(df2, nbins=c(length(a)-1,length(unique(REDTOT1$V3))), col=r)
-dev.off()
-
-png(file="../DDIVS_THESIS.png",height=3000,width=2500,res=600)
-h3<-hist2d(df3, nbins=c(length(a1)-1,length(unique(REDTOT2$V3))), col=r)
 dev.off()
