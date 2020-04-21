@@ -1,5 +1,3 @@
-#data analysis
-
 ############################################################################################################################################################################
 #Activate necessary packages
 ############################################################################################################################################################################
@@ -20,20 +18,23 @@ directory<-gsub("\\", "/", directory_input, fixed=TRUE)                         
 setwd(directory)                                                                                          #setting working directory
 dir()                                                                                                     #show directory content
 file1name<-readline("file1 name:")                                                                        #input the name of the PALM localization table file in the console after running this line
-readLines(file1name)   
+readLines(file1name)                                                                                      
 
 #Elyra PALM tables contain an embedded NULL; the length of the table is equal to the embedded NULL position minus 2
 
 file<-read.delim(file1name, header=T, nrow=XXXXX)                                                         #nrow = embedded null line position is -2
 fileR<-file[file$Channel=XX | file$Channel=XX,]                                                           #file$Channel= Channel number where PAmCherry was imaged
+fileG<-file[file$Channel=XX,]                                                                            #file$Channel= Channel number where mNeonGreen was imaged
 
-#example of filtering (depends on fluorophore used and imaging condition - (fileR1->PAmCherry)
+#example of filtering (depends on fluorophore used and imaging condition - (fileG1->mNeonGreen, fileR1->PAmCherry))
+#skip the next two lines of code if you still have to determine the filtering parameters
 fileR1<-fileR[fileR$Number.Photons>XXX & fileR$Number.Photons<XXX & fileR$PSF.half.width..nm.>XXX & fileR$PSF.half.width..nm.<XXX,]
+fileG1<-fileG[fileG$Number.Photons>XXX & fileG$Number.Photons<XXX & fileG$PSF.half.width..nm.>XXX & fileG$PSF.half.width..nm.<XXX,]
 
 ############################################################################################################################################################################
 #Invert Y because of how data are read by software + shift X and Y according to mask obtained from the Bright Field imaging
 ############################################################################################################################################################################
-fileR2<-fileR1  #or fileG1 accordingly to which protein is currently being analysed ()                                           
+fileR2<-fileR1  #or fileG1 accordingly to which fluorophore is currently being analysed ()                                           
 fileR2$Position.Y..nm.<-51200-fileR2$Position.Y..nm.     
 fileR2$Position.X..nm.<-fileR2$Position.X..nm.+XXX
 fileR2$Position.Y..nm.<-fileR2$Position.Y..nm.+XXX
@@ -45,7 +46,7 @@ fx<-fileR2
 #Verify correct alignment between events and ROIs
 ############################################################################################################################################################################
 
-directory_input<-readline("where is the file? e.g.C:/Users/Giacomo/Documents/phd/Elyra/RCell_folder:")
+directory_input<-readline("where is the file? e.g.C:/Users/Giacomo/Documents/phd/Elyra/November2015:")
 directory<-gsub("\\", "/", directory_input, fixed=TRUE)                                                   #working on windows so I have to invert \ to /
 setwd(directory)                                                                                          #setting working directory
 dir()                                                                                                     #show directory content
@@ -65,8 +66,8 @@ colnames(fx)[16]<-"CellArea"
 
 for (i in fileNames) {
   c1<-read.table(i, header=TRUE)
-  cx1<-(10*c1$X)
-  cy1<-(10*c1$Y)
+  cx1<-(10*c1$X) 
+  cy1<-(10*c1$Y) 
   poli<-list(list(x=cx1, y=cy1))
   cm1<-owin(poly=poli)
   pp3<-as.ppp(fx[c(5:6)],cm1)
@@ -106,8 +107,9 @@ for (i in 1:length(reals$x)) {
 #Save filtered table
 #Add post table parameters to allow for import within the ZenBlack Software
 ############################################################################################################################################################################
+write.table(fileR3, file="Channel_#_cells_drifted_filtered.txt",sep="\t",row.names = FALSE, quote=FALSE) 
 
-write.table(fileR3, file="Channel_#_table_drifted_filtered.txt",sep="\t",row.names = FALSE, quote=FALSE) 
+write.table(fileR3[1:13], file="Channel_#_cells_drifted_filtered_IMG.txt",sep="\t",row.names = FALSE, quote=FALSE) 
 line<-"                                                                                                   
 
 VoxelSizeX : 0.1000000000
@@ -125,10 +127,4 @@ SizeY : 512
 
 ROI List : "
 
-write(line, file="Channel_#_table_drifted_filtered.txt", append=TRUE)
-
-############################################################################################################################################################################
-file<-fileR3                                                                                              #reassign variable
-#From here on, the localizations are grouped according to their neighbouring distance with thresholds of 5,10,20,30,40 and 50 nm (This is not necessary for the Optics 
-#clustering but it is a great way to get an idea of the clustering behaviour of your protein population)
-############################################################################################################################################################################
+write(line, file="Channel_#_cells_drifted_filtered_IMG.txt", append=TRUE)
