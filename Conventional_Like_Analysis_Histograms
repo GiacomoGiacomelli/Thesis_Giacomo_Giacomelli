@@ -69,14 +69,14 @@ for(k in 1:length(unique(REDTOT1$V4))){
 
 
 
-write.table(REDTOT1, file="../wt_cellBYcell_thesis.txt",sep=",",row.names = FALSE, quote=FALSE)   ###save file containing the fluorescence profiles ordereed by cell length
-write.table(df2, file="../wt_cellBYcell_thesis_prof.txt",sep=",",row.names = FALSE, quote=FALSE)  ###save matrix used to represent the fluorescence profiles as demographs via hist2d()
+write.table(REDTOT1, file="../XXX_profiles_ordered.txt",sep=",",row.names = FALSE, quote=FALSE)   ###save file containing the fluorescence profiles ordereed by cell length
+write.table(df2, file="../XXX_profiles_ordered_matrix.txt",sep=",",row.names = FALSE, quote=FALSE)  ###save matrix used to represent the fluorescence profiles as demographs via hist2d()
 
 a<-seq(0,max(df2[1]), by=0.02)
 
 rf1<-colorRampPalette(c("black","blue","red","red","red")) ####Define color scale
 r <- rf1(256)
 
-png(file="../WT_THESIS.png",height=3000,width=2500,res=600)   ####Demograph
+png(file="../XXX_demograph.png",height=3000,width=2500,res=600)   ####Demograph
 h2<-hist2d(df2, nbins=c(length(a)-1,length(unique(REDTOT1$V3))), col=r)
 dev.off()
