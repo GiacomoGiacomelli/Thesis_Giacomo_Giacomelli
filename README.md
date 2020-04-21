@@ -43,7 +43,7 @@ Fiji_Macro_4:_Profiling
 - Requirements 1: A folder named "Profiles" within the same folder of the Input image
 - Requirements 2: ROIs (segmented lines of width 1 um) correspondent to each profile have been added to the ROI manager
 - Output 1: Red*.txt (x position, average fluorescence intensity in Channel 1 across the ROI width at x position)
-- Output 2: Grey*.txt (x position, average fluorescence intensity in Channel 2 across the ROI width at x position)
+- Output 2: Gray*.txt (x position, average fluorescence intensity in Channel 2 across the ROI width at x position)
 
 Conventional_Like_Analysis_Histograms:
 - Input 1:
