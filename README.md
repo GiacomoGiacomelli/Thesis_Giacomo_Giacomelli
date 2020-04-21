@@ -34,6 +34,11 @@ Script_R2_Filtering:
 
 # Conventional-like analysis
 
+- Channel_#_cells_drifted_filtered_IMG.txt can be imported in ZenBlack and shown as Gaussian rendering, ... 
+- Generally, SMLM data tables can be imported in the Fiji plugin ThunderSTORM (M. Ovesný et al. 2014) and rendered as Normalized Gaussian, Histograms and other rendering variants. The resulting rendering can be used for conventional-like analysis. 
+- ThunderSTORM Import Header: id, frame,	x [nm],	y [nm],	sigma [nm],	intensity [photon],	offset [photon],	bkgstd [photon],	chi2,	uncertainty_xy [nm]
+
+
 Conventional_Like_Analysis_Histograms:
 - Input 1:
 write.table(REDTOT1, file="../XXX_profiles_ordered.txt",sep=",",row.names = FALSE, quote=FALSE)   ###save file containing the fluorescence profiles ordereed by cell length
@@ -49,3 +54,6 @@ h2<-hist2d(df2, nbins=c(length(a)-1,length(unique(REDTOT1$V3))), col=r)
 dev.off()
 
 # Single molecule localization microscopy data analysis
+
+# References
+- M. Ovesný, P. Křížek, J. Borkovec, Z. Švindrych, G. M. Hagen. ThunderSTORM: a comprehensive ImageJ plugin for PALM and STORM data analysis and super-resolution imaging. Bioinformatics 30(16):2389-2390, 2014.
