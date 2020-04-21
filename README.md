@@ -38,7 +38,7 @@ Script_R2_Filtering:
 - Channel_#_cells_drifted_filtered_IMG.txt can be imported in ZenBlack and shown as Gaussian rendering, ... 
 - Generally, SMLM data tables can be imported in the Fiji plugin ThunderSTORM (M. Ovesný et al. 2014) and rendered as Normalized Gaussian, Histograms and other rendering variants. The resulting rendering can be used for conventional-like analysis (ThunderSTORM Import Header: id, frame,	x [nm],	y [nm],	sigma [nm],	intensity [photon],	offset [photon],	bkgstd [photon],	chi2,	uncertainty_xy [nm])
 
-Fiji_Macro_4:_Profiling
+Fiji_Macro_4:_Profiling (Works on any rendering)
 - Input: DualChannel_8/16/32-bit_.tif (Channel1-> histograms, Channel2-> bright field)
 - Requirements 1: A folder named "Profiles" within the same folder of the Input image
 - Requirements 2: ROIs (segmented lines of width 1 um) correspondent to each profile have been added to the ROI manager
@@ -46,18 +46,10 @@ Fiji_Macro_4:_Profiling
 - Output 2: Gray*.txt (x position, average fluorescence intensity in Channel 2 across the ROI width at x position)
 
 Conventional_Like_Analysis_Histograms:
-- Input 1:
-write.table(REDTOT1, file="../XXX_profiles_ordered.txt",sep=",",row.names = FALSE, quote=FALSE)   ###save file containing the fluorescence profiles ordereed by cell length
-write.table(df2, file="../XXX_profiles_ordered_matrix.txt",sep=",",row.names = FALSE, quote=FALSE)  ###save matrix used to represent the fluorescence profiles as demographs via hist2d()
-
-a<-seq(0,max(df2[1]), by=0.02)
-
-rf1<-colorRampPalette(c("black","blue","red","red","red")) ####Define color scale
-r <- rf1(256)
-
-png(file="../XXX_demograph.png",height=3000,width=2500,res=600)   ####Demograph
-h2<-hist2d(df2, nbins=c(length(a)-1,length(unique(REDTOT1$V3))), col=r)
-dev.off()
+- Input: Red*.txt (Allows for contemporaray analysis of multiple cells from multiple fields of view; see "file input" section within "Conventional_Like_Analysis_Histograms")
+- Output 1: XXX_profiles_ordered.txt (Channel 1 fluorescence profiles ordereed by cell length)
+- Output 2: XXX_profiles_ordered_matrix.txt (Channel 1 matrix used to represent the fluorescence profiles as demographs via hist2d())
+- Output 3: XXX_demograph.png
 
 # Single molecule localization microscopy data analysis
 
