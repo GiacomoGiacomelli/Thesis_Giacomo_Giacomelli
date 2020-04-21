@@ -2,6 +2,8 @@
 
 This repository contains the following items:
 
+# Common
+
 Fiji macro 1 (Binary Mask):
 - Input: Bright field/Phase contrast image
 - Output: Binary Mask (scaled 10 times, bicubic interpolation)
@@ -17,7 +19,7 @@ Fiji macro 3:
 - Input: Binary Mask (.tif)
 - Manual Input required: Add ROIs of interest to ROI manager (Wand tool) (Save the list of ROIs as .zip before proceeding)
 - Output: Cell*.txt (Requires the existence of a folder named "Cells" within the working directory, it outputs a single file for each ROI listed within the ROI manager)
-  
+
 Script_R1_ROI_mod (ROI modification script):
 - Input: ROIs obtained via Fiji macro 3 -> need to be named Cell*.txt
 - Output: ROIs ready to be used for "Script_R2_Filtering" script -> R.Cell*.txt
@@ -29,3 +31,21 @@ Script_R2_Filtering:
 - Output 2: Filtered + Aligned + CellName + CellDiameter + CellArea (Channel_#_updatedtableX.txt)
 - Output 3: Filtered + Aligned + ROIexclusive + CellName + CellDiameter + CellArea (Channel_#_cells_drifted_filtered.txt)
 - Output 4: Filtered + Aligned + ROIexclusive (can be imported in ZenBlack) (Channel_#_cells_drifted_filtered_IMG.txt)
+
+# Conventional-like analysis
+
+Conventional_Like_Analysis_Histograms:
+- Input 1:
+write.table(REDTOT1, file="../XXX_profiles_ordered.txt",sep=",",row.names = FALSE, quote=FALSE)   ###save file containing the fluorescence profiles ordereed by cell length
+write.table(df2, file="../XXX_profiles_ordered_matrix.txt",sep=",",row.names = FALSE, quote=FALSE)  ###save matrix used to represent the fluorescence profiles as demographs via hist2d()
+
+a<-seq(0,max(df2[1]), by=0.02)
+
+rf1<-colorRampPalette(c("black","blue","red","red","red")) ####Define color scale
+r <- rf1(256)
+
+png(file="../XXX_demograph.png",height=3000,width=2500,res=600)   ####Demograph
+h2<-hist2d(df2, nbins=c(length(a)-1,length(unique(REDTOT1$V3))), col=r)
+dev.off()
+
+# Single molecule localization microscopy data analysis
