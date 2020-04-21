@@ -24,4 +24,8 @@ Script_R1_ROI_mod (ROI modification script):
 
 Script_R2_Filtering:
 - Input 1: Output from Script_R1_ROI_mod
-- Input 2: 
+- Input 2: PALM Table 111111
+- Output 1: ROIs list for R ("AreaListX.RData")
+- Output 2: Filtered + Aligned + CellName + CellDiameter + CellArea (Channel_#_updatedtableX.txt)
+- Output 3: Filtered + Aligned + ROIexclusive + CellName + CellDiameter + CellArea (Channel_#_cells_drifted_filtered.txt)
+- Output 4: Filtered + Aligned + ROIexclusive (can be imported in ZenBlack) (Channel_#_cells_drifted_filtered_IMG.txt)
