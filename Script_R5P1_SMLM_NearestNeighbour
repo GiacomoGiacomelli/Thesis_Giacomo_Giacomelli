@@ -13,7 +13,7 @@ library("RColorBrewer")
 #File input
 ############################################################################################################################################################################
 
-file<-read.table(file="../Channel_#_cells_drifted_filtered.txt", sep="\t", header=TRUE) 
+file<-read.table(file="..path/Channel_#_cells_drifted_filtered.txt", sep="\t", header=TRUE) 
 
 ############################################################################################################################################################################
 #From here on, the localizations are grouped according to their neighbouring distance with thresholds of 5,10,20,30,40 and 50 nm (This is not necessary for the Optics 
