@@ -57,5 +57,28 @@ Script_R4_Average_Profile:
 
 # Single molecule localization microscopy data analysis
 
+Script_R5P1_SMLM_NearestNeighbour:
+- Input 1: Channel_#_cells_drifted_filtered.txt (from focused cells)
+- Input 2: AreaListX.RData (from focused cells)
+- Manual Input required 1: Channel (Red,Green,...)
+- Manual Input required 2: Field (1,2,...,n)
+- Output: Channel_#_cells_drifted_filtered_NearestNeighbour.txt
+
+Script_R5P2_OPTICS:
+- Input: Channel_#_cells_drifted_filtered_NearestNeighbour.txt
+- Manual Input required 1: minPts (minimum points necessary to start clustering)
+- Manual Input required 2: eps_cl (for the first level of clustering)
+- Manual Input required 3: eps_cl (for the second level of clustering)
+
+- Output: Channel_#_cells_drifted_filtered_NearestNeighbour_OPTICS.txt
+
+Script_R5P3_CBC (Only for dual-colour experiments):
+- Input 1: Channel_#_cells_drifted_filtered_NearestNeighbour_OPTICS.txt (first channel)
+- Input 2: Channel_#_cells_drifted_filtered_NearestNeighbour_OPTICS.txt (second channel)
+- Manual input 1: Max search radius (300nm)
+- Manual input 2: Search radius interval (10nm) 
+- Output 1: ChannelR#_cells_drifted_filtered_NearestNeighbour_OPTICS_CBC.txt
+- Output 2: ChannelG#_cells_drifted_filtered_NearestNeighbour_OPTICS_CBC.txt
+
 # References
 - M. Ovesný, P. Křížek, J. Borkovec, Z. Švindrych, G. M. Hagen. ThunderSTORM: a comprehensive ImageJ plugin for PALM and STORM data analysis and super-resolution imaging. Bioinformatics 30(16):2389-2390, 2014.
