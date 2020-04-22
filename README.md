@@ -53,7 +53,7 @@ Script_R3_HistogramsRendering_ProfilesToDemographs:
 
 Script_R4_Average_Profile:
 - Input: XXX_profiles_ordered.txt
-- Output: XXX_
+- Output: XXX_NormalizedAverageProfile.txt
 
 # Single molecule localization microscopy data analysis
 
