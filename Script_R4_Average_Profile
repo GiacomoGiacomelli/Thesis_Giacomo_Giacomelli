@@ -31,4 +31,4 @@ for(i in unique(TOT1$b)){
   df[df$b==i,][3]<-sum(TOT1[TOT1$b==i,]$V2)
 }
 
-write.table(df, file="NormalizedAverageProfile.txt", sep="\t",row.names = FALSE, quote=FALSE)
+write.table(df, file="*_NormalizedAverageProfile.txt", sep="\t",row.names = FALSE, quote=FALSE)
