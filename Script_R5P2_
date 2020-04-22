@@ -1,0 +1,23 @@
+############################################################################################################################################################################
+#Activate necessary packages
+############################################################################################################################################################################
+
+#Keep open the packages used in:
+##Script_R2_Filtering
+##Script_R5P1_SMLM_NearestNeighbour
+
+library("dbscan")
+library("mixtools")
+library("MASS")
+library("agricolae")
+
+############################################################################################################################################################################
+#Open a partially analysed table
+
+Channel_#_cells_drifted_filtered.txt
+
+file0<-read.table(file0, file="..path/Channel_#_cells_drifted_filtered_NearestNeighbour.txt",sep="\t", header=TRUE)
+
+############################################################################################################################################################################
+#The following part is dedicated to the choice of Optics parameters
+#Visualize some cells in order to get an idea of the clustering behaviour (as a last visualized cell use an average cell)
