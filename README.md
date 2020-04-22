@@ -51,6 +51,10 @@ Script_R3_HistogramsRendering_ProfilesToDemographs:
 - Output 2: XXX_profiles_ordered_matrix.txt (Channel 1 matrix used to represent the fluorescence profiles as demographs via hist2d() - maxY is defined for each cell)
 - Output 3: XXX_demograph.png
 
+Script_R4_Average_Profile:
+- Input: XXX_profiles_ordered.txt
+- Output: XXX_
+
 # Single molecule localization microscopy data analysis
 
 # References
