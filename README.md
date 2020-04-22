@@ -69,7 +69,6 @@ Script_R5P2_OPTICS:
 - Manual Input required 1: minPts (minimum points necessary to start clustering)
 - Manual Input required 2: eps_cl (for the first level of clustering)
 - Manual Input required 3: eps_cl (for the second level of clustering)
-
 - Output: Channel_#_cells_drifted_filtered_NearestNeighbour_OPTICS.txt
 
 Script_R5P3_CBC (Only for dual-colour experiments):
