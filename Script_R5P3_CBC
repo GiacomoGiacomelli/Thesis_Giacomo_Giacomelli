@@ -1,0 +1,165 @@
+#CBC analysis
+
+############################################################################################################################################################################
+#Activate necessary packages
+############################################################################################################################################################################
+
+library("ggplot2")
+library("plotrix")
+library("fields")                                           
+library("spatstat")
+library("pgirmess")
+library("RColorBrewer")
+
+############################################################################################################################################################################
+#File input and filtering
+############################################################################################################################################################################
+
+directory_input<-readline("where is the file? e.g.C:/Users/Elyra/table_folder:")
+directory<-gsub("\\", "/", directory_input, fixed=TRUE)                                                   #working on windows so I have to invert \ to /
+setwd(directory)                                                                                          #setting working directory
+dir()                                                                                                     #show directory content
+#input the name of the PALM localization table file in the console after running this line
+readLines(file1name)                                                                                      
+
+######################RESTART FROM HERE DURING THE SECOND ROUND###############################################################################
+#Import two separate channels
+
+G<-read.delim("Channel_#_cells_drifted_filtered_NearestNeighbour_OPTICS.txt", header=T)                 
+R<-read.delim("Channel_#_cells_drifted_filtered_NearestNeighbour_OPTICS.txt", header=T)  
+
+#This script can be applied directly to filtered data as long as column numbers are adjusted
+
+######################RUN THIS SECTION ONLY DURING THE SECOND ROUND SINCE IT WILL INVERT THE CHANNELS#########################################
+R1<-R
+G1<-G
+R<-G1
+G<-R1
+############################################################################################################################################################################
+
+area<-readRDS(file="AreaListX.RData")                                                                    #import flagella area
+pamTS<-cbind(R$Position.X..nm.,R$Position.Y..nm.)                                                        #PAmCherry dataframe composed of only x and y
+neoTS<-cbind(G$Position.X..nm.,G$Position.Y..nm.)                                                        #mNeonGreen dataframe composed of only x and y
+Rp<-as.ppp(pamTS,owin(poly=area))                                                                        #transform data frames into point pattern
+Gp<-as.ppp(neoTS,owin(poly=area))                                                                        #transform data frames into point pattern
+Rd<-pamTS
+Gd<-neoTS
+
+Rmax<-300                                                                                                #max search Radius (nm) 
+mm<-Rmax/10                                                                                              #10 is the Interval radius (nm)
+
+#NAAnew
+
+for (m in 1:mm) {                                                                                        #iterate through the interval radiuses
+  for (i in 1:length(Rd[,1])){                                                                           #iterate through the molecules of population A
+    R[i,83+m]<-length(which(crossdist(Rp[i],Rp)<=m*10))#-1                                               #calculate how many molecules of population A are contained within said interval radius center on the current population A molecule
+  }
+}
+
+for (m in 1:mm) {                                                                                        #normalize by the number of molecules found at the maximum search radius
+  R[83+m]<-R[83+m]/R[16+mm] 
+}
+
+for (m in 1:mm) {                                                                                        #normalize by search area
+  R[83+m]<-R[83+m]*(Rmax^2/(m*10)^2)
+}
+
+#NABnew
+for (m in 1:mm) {                                                                                        #iterate through the interval radiuses
+  for (i in 1:length(Rd[,1])){                                                                           #iterate through the molecules of population A
+    R[i,83+mm+m]<-length(which(crossdist(Rp[i],Gp)<=m*10))                                               #calculate how many molecules of population B are contained within said interval radius center on the current population A molecule
+  }
+}
+
+for (m in 1:mm) {                                                                                        #normalize by the number of molecules found at the maximum search radius
+  R[83+mm+m]<-R[83+mm+m]/R[83+mm+mm] 
+}
+
+for (m in 1:mm) {#maybe19                                                                                #normalize by search area
+  R[83+mm+m]<-R[83+mm+m]*(Rmax^2/(m*10)^2)
+}
+
+RF<-R[R[84+mm]!="NaN" & R[84]!="NaN",]                                                                   #exclude from the analysis those molecules that have no other molecules within their maximum search radius
+
+#Calculation of the rank correlation coefficient (Spearman) "S" and of the colocalization value for the molecules in population A respective to the population B "Ca" (CBC value for A to B)
+
+Rdf<-cbind(RF$Position.X..nm.,RF$Position.Y..nm.)
+for (i in 1:length(RF[,1])) {
+    S<-cor.test(as.numeric(RF[i,c(84:(83+mm))]),as.numeric(RF[i,c((84+mm):(83+mm+mm))]), method="spearman")$estimate
+    Ca<-S*exp(-(nndist(rbind(Rdf[i,],Gd))[1])/Rmax) 
+    RF[i,83+mm+mm+1]<-S
+    RF[i,83+mm+mm+2]<-Ca
+}
+colnames(RF)[83+mm+mm+2]<-"CBC"
+
+write.table(RF , file="ChannelR#_cells_drifted_filtered_NearestNeighbour_OPTICS_CBC.txt",sep=",",row.names = FALSE)                                            #run during the first round to save the CBC values for PAmCherry toward mNeonGreen
+write.table(RF, file="ChannelG#_cells_drifted_filtered_NearestNeighbour_OPTICS_CBC.txt",sep=",",row.names = FALSE)                                             #run during the second round to save the CBC values for mNeonGreen toward PAmCherry
+
+#############################################PLOTS###########################################################################################################
+
+pf<-read.table("ChannelR#_cells_drifted_filtered_NearestNeighbour_OPTICS_CBC.txt",sep=",", header=T)                                                             #import table including CBC (PAmCherry)
+gf<-read.table("ChannelG#_cells_drifted_filtered_NearestNeighbour_OPTICS_CBC.txt",sep=",", header=T)                                                             #import table including CBC (mNeonGreen)
+
+##Plot the molecules within a ROIs with a CBC dependent colour scale (ChannelR)
+
+pdf(file=paste("***R.pdf"))
+ggplot(data=pf[pf$CellName=="CellName",], aes(x=Position.X..nm., y=Position.Y..nm., col=CBC))+
+  geom_point(size=1, alpha=1)+
+  coord_fixed(xlim=c(xxxx,xxxx),ylim=c(xxxx,xxxx))+
+  scale_colour_gradient2(low="blue",mid="red", high="yellow")+
+  theme_bw()+
+  xlab("Position X (nm)")+
+  ylab("Position Y (nm)")+
+  theme(axis.title= element_text(size=20), axis.text = element_text(size=20, color="black"), legend.text= element_text(size=16, color="black"), legend.title= element_text(size=16, color="black"))
+dev.off()
+
+##Plot the molecules within a ROIs with a CBC dependent colour scale (ChannelG)
+
+pdf(file=paste("***G.pdf"))
+ggplot(data=gf[gf$CellName=="CellName",], aes(x=Position.X..nm., y=Position.Y..nm., col=CBC))+
+  geom_point(size=1, alpha=1)+
+  coord_fixed(xlim=c(xxxx,xxxx),ylim=c(xxxx,xxxx))+
+  scale_colour_gradient2(low="blue",mid="red", high="yellow")+
+  theme_bw()+
+  xlab("Position X (nm)")+
+  ylab("Position Y (nm)")+
+  theme(axis.title= element_text(size=20), axis.text = element_text(size=20, color="black"), legend.text= element_text(size=16, color="black"), legend.title= element_text(size=16, color="black"))
+dev.off()
+
+##Plot the molecules within a ROI from both populations
+
+pdf(file=paste("***Dual.pdf"))
+ggplot(data=pf[pf$CellName=="CellName",], aes(x=Position.X..nm., y=Position.Y..nm.))+
+  geom_point(size=1, alpha=0.5,col="red")+
+  geom_point(data=gf[gf$CellName=="CellName",], aes(x=Position.X..nm., y=Position.Y..nm.),size=1, col="darkgreen", alpha=0.5)+
+  coord_fixed(xlim=c(xxxx,xxxx),ylim=c(xxxx,xxxx))+
+  theme_bw()+
+  xlab("Position X (nm)")+
+  ylab("Position Y (nm)")+
+  theme(axis.title= element_text(size=20), axis.text = element_text(size=20, color="black"), legend.text= element_text(size=16, color="black"), legend.title= element_text(size=16, color="black"),
+        plot.margin = margin(0, 2.73, 0, 0.19, "cm"))
+dev.off()
+
+##Add up fields of view and plot the final CBC values
+
+pf1<-read.csv("path/ChannelR_***1_CBC.txt", header=T)
+pf2<-read.csv("path/ChannelR_***N_CBC.txt", header=T)
+...
+gf1<-read.csv("path/ChannelG_***1_CBC.txt", header=T)
+gf2<-read.csv("path/ChannelG_***N_CBC.txt", header=T)
+...
+pfT<-rbind(pf1,pf2,..)
+gfT<-rbind(gf1,gf2,..)
+
+##Plot the CBC values
+
+pdf(file=paste("CBC_tot.pdf"))
+ggplot(data=pf, aes(x=CBC, y=..density..))+
+  geom_histogram(binwidth=0.1, fill="red",colour="black",alpha=0.5)+
+  geom_histogram(data=gf, binwidth=0.1,fill="green",colour="black",alpha=0.5)+
+  xlim(-1.1,1.1)+
+  theme_bw()+
+  xlab("CBC")+
+  ylab("Density")+
+  theme(axis.title= element_text(size=20), axis.text = element_text(size=20, color="black"), legend.text= element_text(size=16, color="black"), legend.title= element_text(size=16, color="black"))
+dev.off()
