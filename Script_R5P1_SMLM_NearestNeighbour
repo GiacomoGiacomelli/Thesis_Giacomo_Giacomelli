@@ -551,4 +551,4 @@ colnames(file0)[63]<-"v63"
 
 ############################################################################################################################################################################
 #Save table
-write.table(file0, file="Channel_#_updatedtableX_partial_analysis.txt",sep="\t",row.names = FALSE, quote=FALSE) 
+write.table(file0, file="Channel_#_cells_drifted_filtered_NearestNeighbour.txt",sep="\t",row.names = FALSE, quote=FALSE) 
