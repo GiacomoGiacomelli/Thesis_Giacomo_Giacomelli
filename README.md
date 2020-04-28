@@ -57,6 +57,11 @@ Script_R4_Average_Profile:
 
 # Single molecule localization microscopy data analysis
 
+Script_Rv (Can be used to simulate data as well):
+- Input 1: AreaListX.RData (from focused cells) | R.Cell*.txt
+- Input 2: Channel_#_cells_drifted_filtered.txt
+- Output 1: Gest_1.png
+
 Script_R5P1_SMLM_NearestNeighbour:
 - Input 1: Channel_#_cells_drifted_filtered.txt (from focused cells)
 - Input 2: AreaListX.RData (from focused cells)
