@@ -90,13 +90,30 @@ dev.off()
 #File input
 ############################################################################################################################################################################
 
-c1<-read.table("../R.Cell*.txt", header=TRUE)
+c1<-read.table("../R.Cell*.txt", header=TRUE)                                    ##import area of a single cell
 cx1<-(10*c1$X)
 cy1<-(10*c1$Y)
 poli1<-list(list(x=cx1, y=cy1))
 povT1<-owin(poly=poli1)
+                            ##or##
+c1<-readRDS("AreaListX.RData")                                                   ##import all cell areas within the field of view
 
+table1<-read.table("../Channel_#_cells_drifted_filtered.txt", header=TRUE)       ##import 
 
+############################################################################################################################################################################
+Calculate G(r)
+############################################################################################################################################################################
 
+ppT1<-as.ppp(table1[c(5:6)],povT1)
 
+density<-length(table1$Index)/(area(povT1)/1000000)                              ##localizations density (divide by 1000000 only if expressed in nm^2)
+realsT1<-subset(ppT1,povT1)                                                      ##exclude point lying outside the ROIs (not necessary when data are filtered, but will not alter the data in that case)
+ExperimentalT1<-Gest(X=realsT1)                                                  ##calculate the nearest neighbour function G(r)
+
+png(file="Gest_1.png",height=2000,width=2000,res=300)
+par(mar=c(5,5,2,2))
+plot(Gest(ppT1), ylim=c(0,1),xlim=c(0,15), cex.main=1, cex.lab=2, cex.axis=2, lwd=10)
+dev.off()
+
+##The single functions (Han, Bord, Pois, Km) can be extracted from "ExperimentalT1" -> ExperimentalT1$theo ...
 
