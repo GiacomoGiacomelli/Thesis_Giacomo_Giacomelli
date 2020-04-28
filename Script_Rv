@@ -1,0 +1,102 @@
+############################################################################################################################################################################
+#Activate necessary packages
+############################################################################################################################################################################
+
+library("spatstat")
+library("dbscan")
+library("ggplot2")
+library("plotrix")
+
+############################################################################################################################################################################
+#Data simulation - - - Skip to File input if you don´t plan to simulate data
+############################################################################################################################################################################
+
+area<-owin(xrange = c(0,1), yrange=c(0,1))                 #simulate a square ROI 1x1
+
+list<-seq(0.05,0.95, by=0.1)                               #uniformly distributed points
+df<-as.data.frame(list)
+df[1]<-list[1]
+df[2]<-list
+TOT<-df
+for (i in list){
+  if (i!=0.005) {
+    df[1]<-i
+    TOT<-rbind(TOT,df)
+  }
+}
+
+pU<-as.ppp(TOT, area)                                       #uniform point pattern
+pP<-rpoispp(110, win=area)                                  #Poisson point pattern (True randomness)
+pC<-rMatClust(22,0.05,5, qin=area)                          #Clustered point pattern (Maternal cluster process)
+
+####Visualize the neareste neighbour function G(r)
+
+u<-Gest(pU)
+p<-Gest(pP)
+c<-Gest(pC)
+
+png(file=paste("../Gest_visualization.png"), width=4000, height=4000, res=600)
+ggplot(data=p, aes(x=r, y=han))+
+  geom_line(col="royalblue", size=3)+
+  geom_line(data=c, col="red", size=3)+
+  geom_line(data=p, aes(x=r, y=theo), size=3)+
+  xlim(0,0.15)+
+  theme_bw()+
+  theme(legend.position = "none", axis.ticks.x=element_line(size=1), axis.ticks.y=element_line(size=1))
+dev.off()
+
+####Calculate OPTICS for the simulated point pattern 
+
+ppU<-as.data.frame(pU$x)
+ppU[2]<-pU$y
+pmU<-data.matrix(ppU)
+opU<-optics(pmU, eps=1, minPts=3)                         ###"eps" and "minPts" are variable
+opDBSCANU <- extractDBSCAN(opU, eps_cl = 0.05)            ###"eps_cl" is variable
+plot(opDBSCANU)
+hullplot(pmU, opDBSCANU, main = "OPTICS", pch=".",asp=1)
+
+ppP<-as.data.frame(pP$x)
+ppP[2]<-pP$y
+pmP<-data.matrix(ppP)
+opP<-optics(pmP, eps=1, minPts=3)                         ###"eps" and "minPts" are variable
+opDBSCANP <- extractDBSCAN(opP, eps_cl = 0.05)            ###"eps_cl" is variable
+plot(opDBSCANP)
+hullplot(pmP, opDBSCANP, main = "OPTICS", pch=".",asp=1)
+
+ppC<-as.data.frame(pC$x)
+ppC[2]<-pC$y
+pmC<-data.matrix(ppC)
+opC<-optics(pmC, eps=1, minPts=3)                         ###"eps" and "minPts" are variable
+opDBSCANC <- extractDBSCAN(opC, eps_cl = 0.05)            ###"eps_cl" is variable
+plot(opDBSCANC)
+hullplot(pmC, opDBSCANC, main = "OPTICS", pch=".",asp=1)
+
+####Visualize overlap of OPTICS clusters to the point pattern (figure 9B-C)
+
+a11<-ppP                                                           
+colnames(a11)[1]<-"x"
+colnames(a11)[2]<-"y"
+png(file=paste("Hullplot_overlap_to_point_pattern.png"), width=4000, height=4000, res=600)
+par(mar = c(10, 10, 5, 5), mgp = c(3, 6.5, 0))
+plot(a11$x, a11$y, asp = 1, pch=".", xlab="X position (nm)", ylab="Y position (nm)", cex.lab=2, cex.axis=2, type ="n", cex.lab=2, yaxs="i", xaxs="i", xlim=c(0,1), ylim=c(0,1))
+for(s in 1:(length(a11$x)-1)){
+  draw.circle(a11$x[s], a11$y[s], 0.01, nv = 100, border = NULL, col = "royalblue", lty = 1, lwd = 0.5)
+}
+par(new=TRUE)
+hullplot(pm, opDBSCAN, main = "OPTICS", pch=NA,asp=1, xlim=c(0,1), ylim=c(0,1),hull_lwd=2,col="red", yaxs="i", xaxs="i", xaxt='n', yaxt='n', ann=FALSE,)
+dev.off()
+
+############################################################################################################################################################################
+#File input
+############################################################################################################################################################################
+
+c1<-read.table("../R.Cell*.txt", header=TRUE)
+cx1<-(10*c1$X)
+cy1<-(10*c1$Y)
+poli1<-list(list(x=cx1, y=cy1))
+povT1<-owin(poly=poli1)
+
+
+
+
+
