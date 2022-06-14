@@ -10,7 +10,7 @@ c1<-read.table(k, header=TRUE)
 NT<-data.frame()
 for (i in 1:(length(c1$X)-1)) {
   if (c1[i,1]==c1[i+1,1] & abs(c1[i+1,2]-c1[i,2])>=2) {
-    a<-data.frame(X=rep(c1[i,1], times=abs((c1[i+1,2]-c1[i,2])-1),Y=0))
+    a<-data.frame(X=rep(c1[i,1], times=(abs(c1[i+1,2]-c1[i,2])-1)),Y=0)
     if ((c1[i+1,2]-c1[i,2])<0) {
       if (abs(c1[i+1,2]-c1[i,2])==2) { a[2]<-(c1[i,2]-1) } 
       else { a[2]<-seq((c1[i,2]-1),(c1[i+1,2]+1),by=-1) } 
